@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>屏幕 · 语音 · Matter —— NAS 与 AI 主机产品全景研究报告</title>
+<style>
+:root{
+  --bg:#0b0d10; --bg2:#101318; --bg3:#151a21;
+  --ink:#e8e6e1; --ink2:#a8a49b; --ink3:#6d6a62;
+  --line:#262b33; --line2:#1b1f26;
+  --amber:#e0a458; --amber2:#c98a3b;
+  --teal:#5db8a8; --red:#d96c5f; --blue:#6f9fd8; --purple:#a78bca;
+  --serif:"Songti SC","STSong","Noto Serif SC",Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;
+  --mono:"SF Mono",Menlo,Consolas,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background:radial-gradient(900px 500px at 80% -10%,rgba(224,164,88,.06),transparent 60%),
+             radial-gradient(700px 500px at 10% 30%,rgba(93,184,168,.045),transparent 60%)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+a{color:var(--amber);text-decoration:none}
+::selection{background:rgba(224,164,88,.28)}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:50;background:rgba(11,13,16,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--line2)}
+nav .wrap{display:flex;align-items:center;gap:26px;height:54px}
+nav .logo{font-family:var(--mono);font-size:13px;letter-spacing:.12em;color:var(--amber)}
+nav .links{display:flex;gap:20px;margin-left:auto;font-size:13px}
+nav .links a{color:var(--ink2);transition:color .2s}
+nav .links a:hover{color:var(--amber)}
+@media(max-width:760px){nav .links{display:none}}
+
+/* ---------- hero ---------- */
+.hero{padding:96px 0 72px;border-bottom:1px solid var(--line2)}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.22em;color:var(--amber);text-transform:uppercase;margin-bottom:22px}
+.hero h1{font-family:var(--serif);font-size:clamp(34px,5.2vw,60px);font-weight:700;line-height:1.22;letter-spacing:.01em;max-width:920px}
+.hero h1 em{font-style:normal;color:var(--amber)}
+.hero .sub{margin-top:26px;max-width:760px;color:var(--ink2);font-size:16px}
+.hero .meta-row{margin-top:38px;display:flex;flex-wrap:wrap;gap:12px}
+.chip{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--ink2)}
+.chip b{color:var(--amber);font-weight:600}
+
+/* ---------- verdict ---------- */
+.verdict{padding:64px 0;border-bottom:1px solid var(--line2)}
+.verdict-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px}
+@media(max-width:860px){.verdict-grid{grid-template-columns:1fr}}
+.vcard{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:26px 24px;position:relative;overflow:hidden}
+.vcard .num{font-family:var(--serif);font-size:52px;line-height:1;color:var(--amber);font-weight:700}
+.vcard h3{margin-top:14px;font-size:16px;font-weight:600}
+.vcard p{margin-top:8px;font-size:13.5px;color:var(--ink2)}
+.vcard::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--amber),transparent)}
+
+/* ---------- section ---------- */
+section{padding:72px 0;border-bottom:1px solid var(--line2)}
+.sec-head{margin-bottom:40px;max-width:820px}
+.sec-no{font-family:var(--mono);font-size:12px;color:var(--amber);letter-spacing:.2em;margin-bottom:12px}
+.sec-head h2{font-family:var(--serif);font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.3}
+.sec-head p{margin-top:14px;color:var(--ink2);font-size:15px}
+
+/* ---------- capability legend ---------- */
+.cap-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px}
+@media(max-width:860px){.cap-legend{grid-template-columns:1fr}}
+.cap-card{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--bg2);cursor:pointer;transition:border-color .2s,transform .2s}
+.cap-card:hover{border-color:var(--amber);transform:translateY(-2px)}
+.cap-card .ic{font-size:22px}
+.cap-card h3{font-size:15px;margin:10px 0 6px;font-weight:600}
+.cap-card p{font-size:13px;color:var(--ink2)}
+.cap-card.active{border-color:var(--amber);background:#171310}
+
+/* ---------- filter bar ---------- */
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;align-items:center}
+.fgroup{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.flabel{font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.1em;margin-right:2px}
+.fbtn{font-size:12.5px;border:1px solid var(--line);background:transparent;color:var(--ink2);border-radius:999px;padding:6px 13px;cursor:pointer;transition:all .18s;font-family:var(--sans)}
+.fbtn:hover{border-color:var(--amber);color:var(--ink)}
+.fbtn.on{background:var(--amber);border-color:var(--amber);color:#161310;font-weight:600}
+.count-line{font-family:var(--mono);font-size:12px;color:var(--ink3);margin-bottom:26px}
+
+/* ---------- product grid ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.pcard{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:24px;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;position:relative;display:flex;flex-direction:column;gap:14px}
+.pcard:hover{transform:translateY(-3px);border-color:#3a414c;box-shadow:0 12px 34px rgba(0,0,0,.35)}
+.pcard .top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.pcard .brand{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink3);text-transform:uppercase}
+.pcard h3{font-size:18px;font-weight:700;margin-top:4px;line-height:1.35}
+.pcard h3 small{display:block;font-size:12.5px;color:var(--ink2);font-weight:400;margin-top:2px}
+.badges{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.badge{font-family:var(--mono);font-size:10.5px;padding:3px 9px;border-radius:6px;letter-spacing:.05em;white-space:nowrap}
+.b-sale{background:rgba(93,184,168,.14);color:var(--teal);border:1px solid rgba(93,184,168,.3)}
+.b-ann{background:rgba(224,164,88,.13);color:var(--amber);border:1px solid rgba(224,164,88,.32)}
+.b-rumor{background:rgba(167,139,202,.13);color:var(--purple);border:1px solid rgba(167,139,202,.32)}
+.b-cat{background:rgba(111,159,216,.1);color:var(--blue);border:1px solid rgba(111,159,216,.28)}
+.caps{display:flex;gap:8px;flex-wrap:wrap}
+.cap{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--ink2);border:1px solid var(--line2);border-radius:8px;padding:4px 9px;background:var(--bg3)}
+.cap .dot{width:8px;height:8px;border-radius:50%}
+.d-full{background:var(--teal)}
+.d-part{background:var(--amber)}
+.d-none{background:#3a3f47}
+.cap.full{color:var(--teal)}
+.cap.part{color:var(--amber)}
+.cap.none{color:var(--ink3)}
+.pcard .price{font-family:var(--mono);font-size:14px;color:var(--amber)}
+.pcard .price small{color:var(--ink3);font-size:11px;margin-left:6px}
+.pcard .one{font-size:13.5px;color:var(--ink2);border-top:1px dashed var(--line);padding-top:12px;margin-top:auto}
+
+/* ---------- modal ---------- */
+.modal-mask{position:fixed;inset:0;background:rgba(5,6,8,.72);backdrop-filter:blur(6px);z-index:100;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:5vh 18px 8vh}
+.modal-mask.show{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--line);border-radius:20px;max-width:880px;width:100%;padding:40px 42px;position:relative;animation:up .28s ease}
+@keyframes up{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
+.modal .close{position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--bg3);color:var(--ink2);font-size:17px;cursor:pointer;transition:all .2s}
+.modal .close:hover{border-color:var(--amber);color:var(--amber)}
+.m-brand{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;color:var(--amber);text-transform:uppercase}
+.modal h2{font-family:var(--serif);font-size:30px;margin:8px 0 4px;line-height:1.3}
+.m-sub{color:var(--ink2);font-size:14px;margin-bottom:20px}
+.m-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.m-caps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:26px}
+@media(max-width:640px){.m-caps{grid-template-columns:repeat(2,1fr)}}
+.mcap{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--bg3)}
+.mcap .t{font-size:11px;font-family:var(--mono);letter-spacing:.08em;color:var(--ink3);margin-bottom:5px}
+.mcap .v{font-size:12.5px;line-height:1.5}
+.mcap.full{border-color:rgba(93,184,168,.4)}
+.mcap.part{border-color:rgba(224,164,88,.4)}
+.mcap .v b{font-weight:600}
+.mcap.full .v b{color:var(--teal)}
+.mcap.part .v b{color:var(--amber)}
+.msec{margin-top:24px}
+.msec h4{font-size:13px;font-family:var(--mono);letter-spacing:.14em;color:var(--amber);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.msec h4::after{content:"";flex:1;height:1px;background:var(--line)}
+.msec p, .msec li{font-size:14px;color:#cfccc4}
+.msec ul{padding-left:20px}
+.msec li{margin-bottom:5px}
+.spec-table{width:100%;border-collapse:collapse;font-size:13.5px}
+.spec-table td{border:1px solid var(--line2);padding:9px 12px;vertical-align:top}
+.spec-table td:first-child{color:var(--ink3);width:110px;font-family:var(--mono);font-size:12px}
+.score-row{display:flex;flex-direction:column;gap:10px}
+.score{display:grid;grid-template-columns:120px 1fr 34px;align-items:center;gap:12px;font-size:13px}
+.score .lbl{color:var(--ink2)}
+.score .bar{height:7px;background:var(--bg3);border-radius:99px;overflow:hidden;border:1px solid var(--line2)}
+.score .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--amber2),var(--amber));border-radius:99px}
+.score .n{font-family:var(--mono);text-align:right;color:var(--amber)}
+.pm-note{margin-top:26px;border-left:3px solid var(--amber);background:#171310;border-radius:0 12px 12px 0;padding:18px 20px;font-size:14px;color:#d8d4cb}
+.pm-note b{color:var(--amber)}
+@media(max-width:640px){.modal{padding:28px 20px}}
+
+/* ---------- compare table ---------- */
+.tbl-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--bg2)}
+table.cmp{width:100%;border-collapse:collapse;font-size:13px;min-width:960px}
+.cmp th{position:sticky;top:0;background:var(--bg3);text-align:left;padding:13px 14px;font-size:12px;font-family:var(--mono);letter-spacing:.06em;color:var(--ink2);border-bottom:1px solid var(--line);cursor:pointer;user-select:none;white-space:nowrap}
+.cmp th:hover{color:var(--amber)}
+.cmp td{padding:12px 14px;border-bottom:1px solid var(--line2);vertical-align:top;color:#cfccc4}
+.cmp tr:last-child td{border-bottom:none}
+.cmp tr:hover td{background:rgba(224,164,88,.04)}
+.cmp .pname{font-weight:600;color:var(--ink);white-space:nowrap;cursor:pointer}
+.cmp .pname:hover{color:var(--amber)}
+.mark{font-family:var(--mono);font-size:12px;white-space:nowrap}
+.m-full{color:var(--teal)} .m-part{color:var(--amber)} .m-no{color:var(--ink3)}
+
+/* ---------- scatter ---------- */
+.scatter-box{position:relative;border:1px solid var(--line);border-radius:16px;background:var(--bg2);padding:10px}
+#scatter{width:100%;height:520px;display:block;cursor:crosshair}
+.scatter-tip{position:absolute;pointer-events:none;background:#1c2129;border:1px solid var(--line);border-radius:10px;padding:10px 13px;font-size:12.5px;display:none;z-index:5;max-width:250px;box-shadow:0 10px 26px rgba(0,0,0,.5)}
+.scatter-legend{display:flex;flex-wrap:wrap;gap:16px;padding:14px 10px 6px;font-size:12.5px;color:var(--ink2)}
+.scatter-legend span{display:flex;align-items:center;gap:7px}
+.scatter-legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+/* ---------- analysis essays ---------- */
+.essays{display:flex;flex-direction:column;gap:22px}
+.essay{border:1px solid var(--line);border-radius:16px;background:var(--bg2);overflow:hidden}
+.essay-head{padding:24px 28px;cursor:pointer;display:flex;align-items:center;gap:18px;transition:background .2s}
+.essay-head:hover{background:rgba(224,164,88,.04)}
+.essay-head .no{font-family:var(--serif);font-size:30px;color:var(--amber);font-weight:700;min-width:44px}
+.essay-head h3{font-size:18px;font-weight:700;flex:1}
+.essay-head h3 small{display:block;font-size:13px;color:var(--ink2);font-weight:400;margin-top:3px}
+.essay-head .arrow{color:var(--ink3);transition:transform .25s;font-size:14px}
+.essay.open .essay-head .arrow{transform:rotate(90deg);color:var(--amber)}
+.essay-body{display:none;padding:0 28px 28px 90px}
+.essay.open .essay-body{display:block}
+.essay-body h5{font-size:14px;color:var(--amber);margin:18px 0 8px;font-weight:600}
+.essay-body p,.essay-body li{font-size:14px;color:#cfccc4}
+.essay-body ul{padding-left:20px}
+.essay-body li{margin-bottom:5px}
+.essay-body .verdict-line{margin-top:18px;border-left:3px solid var(--teal);padding:12px 16px;background:rgba(93,184,168,.07);border-radius:0 10px 10px 0;font-size:14px}
+@media(max-width:640px){.essay-body{padding-left:28px}}
+
+/* ---------- edge list ---------- */
+.edge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.edge{border:1px solid var(--line2);border-radius:12px;padding:16px 18px;background:var(--bg2)}
+.edge h4{font-size:14px;font-weight:600}
+.edge .tag{font-family:var(--mono);font-size:10.5px;color:var(--ink3);margin-left:8px}
+.edge p{font-size:12.5px;color:var(--ink2);margin-top:6px}
+
+/* ---------- footer ---------- */
+footer{padding:56px 0 80px;color:var(--ink3);font-size:13px}
+footer .src{margin-top:14px;line-height:2}
+footer b{color:var(--ink2)}
+.totop{position:fixed;right:26px;bottom:26px;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--bg3);color:var(--ink2);cursor:pointer;display:none;z-index:60;font-size:16px}
+.totop.show{display:block}
+.totop:hover{border-color:var(--amber);color:var(--amber)}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <span class="logo">NAS × AI-HOST / RESEARCH</span>
+  <div class="links">
+    <a href="#verdict">核心判断</a>
+    <a href="#products">产品全景</a>
+    <a href="#compare">规格对比</a>
+    <a href="#matrix">定位矩阵</a>
+    <a href="#analysis">三能力论证</a>
+    <a href="#edge">边界案例</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="kicker">PRODUCT RESEARCH · AUG 2026 · 全球 20+ 款</div>
+  <h1>带屏幕、带语音、自带 Matter 网关的<br><em>NAS 与 AI 主机</em>，到底存在吗？</h1>
+  <p class="sub">我们把「屏幕」「语音交互」「原生 IoT / Matter 网关」当作三个硬指标，扫遍国内外已售、已发布未售、在研传闻中的 NAS 私有云与家庭 AI 主机产品，并延伸到同场竞技的智能中控屏阵营——从产品经理视角逐款剖析硬件、结构、ID、售价、软件与竞争力。</p>
+  <div class="meta-row">
+    <span class="chip"><b>21</b> 款主表产品</span>
+    <span class="chip"><b>12</b> 条边界案例</span>
+    <span class="chip"><b>3</b> 大能力论证</span>
+    <span class="chip">数据截至 <b>2026-08</b></span>
+  </div>
+</div></header>
+
+<div class="verdict" id="verdict"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">01 / EXECUTIVE VERDICT</div>
+    <h2>先说结论：三项全能的 NAS 或 AI 主机，<br>市面上基本不存在——而这正是机会所在</h2>
+  </div>
+  <div class="verdict-grid">
+    <div class="vcard">
+      <div class="num">0</div>
+      <h3>台已售 NAS 同时原生具备三者</h3>
+      <p>屏、语音、Matter 网关三者齐全的「存储/算力主机」截至 2026-08 无一台正式在售。最接近的绿联 iDX6011 Pro（屏+语音、无 Matter）与萤石 AI CoreX（语音+Matter+存储、无屏）各占两角。</p>
+    </div>
+    <div class="vcard">
+      <div class="num">12+</div>
+      <h3>台中控屏做到三项全能——但没有存储</h3>
+      <p>Echo Show 8/15、Aqara S1 Plus、MixPad 7、小米中控屏 Max、Nest Hub Max 等早已实现屏+语音+Matter/网关三合一，证明需求真实存在；但它们普遍没有本地大容量存储与算力。</p>
+    </div>
+    <div class="vcard">
+      <div class="num">2026</div>
+      <h3>两条产品线正在向对方合拢</h3>
+      <p>AI NAS 在加屏幕与语音（iDX、极空间 T6、萤石 CoreX），中控屏在加本地 AI 与存储（AI CoreX、苹果 HomePad 传闻、华为智能主机）。「家庭数据 + 交互 + 物联」三权合一是明确的下一站。</p>
+    </div>
+  </div>
+</div></div>
+
+<section id="caps"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">02 / METHODOLOGY</div>
+    <h2>判定标准：什么叫「带」屏幕、语音、Matter</h2>
+    <p>只看<b style="color:var(--amber)">硬件原生</b>能力，区分「原生集成」「软件可扩展/官方承诺」「不具备」三档。能用 Docker 自己装 Home Assistant 不算原生 Matter 网关；手机 App 里的语音助手不算硬件语音交互。点击下面三张卡片可直接筛选产品库。</p>
+  </div>
+  <div class="cap-legend">
+    <div class="cap-card" data-cap="screen">
+      <div class="ic">▣</div>
+      <h3>屏幕 SCREEN</h3>
+      <p>机身自带显示屏（状态 LCD / 触控屏 / 全面屏）。不含 HDMI 外接显示器方案。</p>
+    </div>
+    <div class="cap-card" data-cap="voice">
+      <div class="ic">◉</div>
+      <h3>语音 VOICE</h3>
+      <p>机身自带麦克风阵列 + 扬声器，支持语音唤醒或语音指令交互。不含仅手机 App 语音。</p>
+    </div>
+    <div class="cap-card" data-cap="iot">
+      <div class="ic">⬡</div>
+      <h3>IoT 网关 MATTER</h3>
+      <p>硬件内置 Matter 控制器/桥接器或 Zigbee/Thread 等物联网关，可直接纳管 IoT 子设备。</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="products"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">03 / PRODUCT LANDSCAPE</div>
+    <h2>产品全景：21 款主表产品逐款剖析</h2>
+    <p>点击任意卡片展开完整产品档案：硬件配置、结构与 ID、售价、软件功能、卖点与竞争力评分、以及一段产品经理视角的点评。图例：<span style="color:var(--teal)">●</span> 原生具备　<span style="color:var(--amber)">●</span> 软件可扩展/官方承诺/部分具备　<span style="color:var(--ink3)">●</span> 不具备。</p>
+  </div>
+  <div class="filters">
+    <div class="fgroup"><span class="flabel">品类</span>
+      <button class="fbtn on" data-f="cat" data-v="all">全部</button>
+      <button class="fbtn" data-f="cat" data-v="nas">NAS 私有云</button>
+      <button class="fbtn" data-f="cat" data-v="host">AI 主机/中枢</button>
+      <button class="fbtn" data-f="cat" data-v="panel">智能中控屏</button>
+    </div>
+    <div class="fgroup"><span class="flabel">状态</span>
+      <button class="fbtn on" data-f="status" data-v="all">全部</button>
+      <button class="fbtn" data-f="status" data-v="sale">在售</button>
+      <button class="fbtn" data-f="status" data-v="ann">已发布未售</button>
+      <button class="fbtn" data-f="status" data-v="rumor">在研/传闻</button>
+    </div>
+    <div class="fgroup"><span class="flabel">地区</span>
+      <button class="fbtn on" data-f="region" data-v="all">全部</button>
+      <button class="fbtn" data-f="region" data-v="cn">国内</button>
+      <button class="fbtn" data-f="region" data-v="gl">海外</button>
+    </div>
+  </div>
+  <div class="count-line" id="countLine"></div>
+  <div class="grid" id="grid"></div>
+</div></section>
+
+<section id="compare"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">04 / SPECS MATRIX</div>
+    <h2>规格对比表</h2>
+    <p>点击表头排序；点击产品名展开完整档案。</p>
+  </div>
+  <div class="tbl-scroll">
+    <table class="cmp" id="cmpTable">
+      <thead><tr>
+        <th data-k="name">产品</th><th data-k="cat">品类</th><th data-k="status">状态</th>
+        <th data-k="price">售价</th><th data-k="screen">屏幕</th><th data-k="voice">语音</th>
+        <th data-k="iot">Matter/IoT</th><th data-k="ai">本地 AI 算力</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div></section>
+
+<section id="matrix"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">05 / POSITIONING MAP</div>
+    <h2>定位矩阵：存储算力 × 交互物联</h2>
+    <p>横轴 = 存储/算力属性（是否是大容量存储或家庭算力主机）；纵轴 = 交互/物联属性（屏、语音、网关三能力的原生集成度）。右上角即「三权合一」的空白地带。悬停查看详情，点击散点展开档案。</p>
+  </div>
+  <div class="scatter-box">
+    <canvas id="scatter"></canvas>
+    <div class="scatter-tip" id="stip"></div>
+    <div class="scatter-legend">
+      <span><i style="background:var(--teal)"></i>NAS 私有云</span>
+      <span><i style="background:var(--amber)"></i>AI 主机/中枢</span>
+      <span><i style="background:var(--blue)"></i>智能中控屏</span>
+      <span style="margin-left:auto;font-family:var(--mono);font-size:11px">虚线框 = 三权合一空白区</span>
+    </div>
+  </div>
+</div></section>
+
+<section id="analysis"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">06 / CAPABILITY DEEP-DIVE</div>
+    <h2>深度论证：屏幕、语音、原生 IoT 到底值不值</h2>
+    <p>三个能力不是堆料竞赛，而是三条产品哲学路线。以下每篇展开讨论：必要性、用户价值、反面论证、以及给 NAS/AI 主机品类的落地建议。</p>
+  </div>
+  <div class="essays" id="essays"></div>
+</div></section>
+
+<section id="edge"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">07 / EDGE CASES</div>
+    <h2>边界案例：差一项的玩家们</h2>
+    <p>这些产品差一项或两项就能进入主表，但它们定义了竞争的边界——也是判断「三合一」价值的对照组。</p>
+  </div>
+  <div class="edge-grid" id="edgeGrid"></div>
+</div></section>
+
+<footer><div class="wrap">
+  <b>数据与口径说明</b>
+  <div class="src">
+  · 产品信息来自各厂商官方发布（CES 2025/2026、AWE 2026、WAIC 2026、品牌发布会）、Kickstarter 页面及主流科技媒体报道（IT之家、快科技、雷科技、TweakTown、AppleInsider 等），检索截至 2026 年 8 月。<br>
+  · 售价以官方首发价/众筹价/主流电商挂牌价为准，汇率按发布时点折算；「在研/传闻」类产品参数以供应链与媒体爆料为准，存在不确定性，均已明确标注。<br>
+  · Matter 能力判定区分：原生控制器/桥接器（硬件集成）＞ 官方承诺/OTA 计划 ＞ 用户可自行部署（Docker/HA 等，不计入）。<br>
+  · 本报告为产品研究用途，不构成购买建议；价格与功能以厂商最终上市信息为准。
+  </div>
+</div></footer>
+
+<div class="modal-mask" id="mask"><div class="modal" id="modal"></div></div>
+<button class="totop" id="totop" title="回到顶部">↑</button>
+
+<script>
+/* ================= DATA ================= */
+const CAT = {nas:'NAS 私有云', host:'AI 主机/中枢', panel:'智能中控屏'};
+const STATUS = {sale:'在售', ann:'已发布未售', rumor:'在研/传闻'};
+const PRODUCTS = [
+{
+id:'ugreen-idx6011pro', brand:'UGREEN 绿联', name:'NASync iDX6011 Pro', sub:'+ 同系 iDX6011（32/64GB）', cat:'nas', status:'sale', region:'gl',
+price:'$1,559 起', priceNote:'Pro 64GB 预售价；MSRP $2,599 · iDX6011 $999 起 · 国行随 2026 上市',
+caps:{screen:'part', voice:'full', iot:'none', ai:'full'},
+capText:{screen:'3 英寸 LCD 状态屏（非触控）', voice:'Uliya AI 助手，自然语义语音交互、语音备忘录转录', iot:'无原生 IoT 网关；可 Docker 部署 Home Assistant', ai:'Intel 酷睿 Ultra 7 255H · 96 TOPS 本地算力'},
+one:'消费级 AI NAS 的当前天花板：本地大模型 + 语音交互 + 一块状态屏，唯独缺一张 IoT 门票。',
+specs:[['处理器','Intel Core Ultra 7 255H（NPU 加持，整机 96 TOPS）'],['内存','最高 64GB LPDDR5x'],['存储','6×SATA（单盘 30TB）+ 2×M.2（8TB），最高 196TB；内置 128GB 系统盘'],['接口','2×雷电 4、2×10GbE、OCuLink（可外接独显）、HDMI 8K、SD 4.0、10Gbps USB×2'],['屏幕','3 英寸 LCD（运行状态/信息展示）'],['噪音','低噪音风扇，安静模式最低 29dB']],
+structure:'铝合金一体机身，桌面立式形态，深空灰配色；正面 3 英寸 LCD 屏 + 电源键，背部全接口排布，底置进风配合低噪风扇；ID 语言接近 Mac Studio 式的「桌面家电化」路线，明显在为客厅/书房场景而非机柜场景设计。',
+software:'UGOS Pro 系统；Uliya AI 助手（本地 LLM）：全语义搜索、离线对话、AI 相册（人物/场景/文字识别）、语音备忘录转录与摘要、AI 文件自动整理；支持接入 DeepSeek/Qwen 第三方开源模型；与 MiniMax 战略合作原生内嵌大模型；支持 OpenClaw 一键部署 AI Agent。SGS 信息安全与隐私双认证 + TRUSTe 隐私认证。',
+points:['Kickstarter 史上众筹金额最高的 NAS（667 万美元，14 天达标）','本地 AI 全离线，数据不出设备，切中隐私焦虑','OCuLink 外接独显，算力可再扩展，做「家庭 AI 服务器」','2026 CES 起与 SynCare 安防生态（摄像头/门铃/D500 中控屏）联动，IoT 版图补齐中'],
+pros:'AI 体验完整度与隐私叙事行业领先，硬件扩展性（雷电4/OCuLink/双10GbE）无对手',
+cons:'售价高企；屏幕只是状态屏非交互屏；无原生 Matter/Zigbee 网关，IoT 依赖另购 SynCare 或自建 HA',
+scores:[['硬件配置',9.5],['结构/ID',8.5],['软件/AI 体验',9.0],['交互完整度',7.0],['性价比',6.0],['生态潜力',8.5]],
+pm:'PM 点评：iDX6011 Pro 是本报告里<b>离「三合一」最近的存储类产品</b>。它把「本地大模型 + 语音」做成了开箱即用，3 寸屏更像品牌符号而非交互入口。真正的悬念是：绿联会选择让 iDX 直接集成 Matter 控制器，还是让 SynCare D500 中控屏去承担 IoT 入口——从 CES 2026 的布局看，后者概率更大，「NAS 管数据、中控屏管交互」的双机路线已现雏形。'
+},
+{
+id:'ezviz-corex', brand:'EZVIZ 萤石', name:'AI CoreX 智能大模型主机', sub:'家庭「边」侧 AI 主机', cat:'host', status:'ann', region:'cn',
+price:'未公布', priceNote:'2026-04 发布，海外首发；国内上市时间与定价未公布',
+caps:{screen:'none', voice:'full', iot:'full', ai:'full'},
+capText:{screen:'无屏（黑色桶状主机）', voice:'Home Vita 本地智能体，语音指令管理设备与文件', iot:'兼容萤石全系 + Matter 第三方设备统一纳管（发布承诺）', ai:'64 TOPS 算力 · 24GB 内存 + 128GB 闪存'},
+one:'目前唯一官宣「存储 + 本地智能体 + Matter 纳管」三合一的 AI 主机——只差一块屏。',
+specs:[['算力','64 TOPS（本地大模型推理）'],['内存/闪存','24GB RAM + 128GB Flash'],['存储','家庭数据统一存储 + NVR 录像存储（成员分区管理）'],['AI','萤石蓝海大模型 2.0 + Home Vita 智能体'],['IoT','萤石全系设备 + Matter 协议第三方产品（即将支持）'],['形态','黑色桶状立式主机，无屏幕']],
+structure:'桶状立式机身（类似 Mac Pro 缩微/ HomePod 放大的桌面摆件路线），黑色磨砂质感，无外露接口阵列强调「客厅可摆放」；散热依赖顶部/底部风道，视觉上完全去 NAS 化，向智能音箱/家居摆件靠拢。',
+software:'EZVIZ HomePlay OS 体系；Home Vita 智能体：自然语言检索录像/图片/文件，告警消息语义化聚合推送，每日/每周录像精华摘要，「今日动态」家庭事件总结；一句话创建复杂场景（观影模式等），具备操作记忆与主动学习能力；端边云协同，可选全本地运行。',
+points:['全球消费摄像头出货量第一（IDC 2025）的萤石，把「看家数据」变成 AI 主机的护城河','语音指令直接编排跨设备自动化，跳过 App 繁琐配置','Matter 兼容使其成为跨品牌纳管入口，而不只是萤石自家网关','与 Y31 系列 AI 视频锁、SP 中控屏组成「云-边-端」全家桶'],
+pros:'语音+Matter+存储+本地 AI 的四合一理念当前独一无二；背靠萤石设备存量与安防数据壁垒',
+cons:'无屏（交互全靠语音/App）；未上市、未定价，Matter 支持仍是「即将」；算力与存储扩展性未披露',
+scores:[['硬件配置',7.5],['结构/ID',8.0],['软件/AI 体验',8.5],['交互完整度',7.5],['性价比',7.0],['生态潜力',9.0]],
+pm:'PM 点评：AI CoreX 是「AI 主机」品类里<b>定位最准确的产品</b>：它不跟 NAS 拼盘位，而是绑定萤石最强的安防数据流（录像→摘要→自然语言检索），再用 Matter 把入口开放给第三方。若量产版能兑现 Matter 承诺并补一块哪怕 4 寸的交互屏，它就是「三权合一」的第一个完成体。'
+},
+{
+id:'ezviz-tianji', brand:'EZVIZ 萤石', name:'萤石天机 · 智能家居 AI 主机', sub:'CoreX 的前代探索', cat:'host', status:'sale', region:'cn',
+price:'方案定价', priceNote:'随全屋方案销售；单品未大规模零售',
+caps:{screen:'none', voice:'part', iot:'part', ai:'full'},
+capText:{screen:'无屏', voice:'App 端智能管家语音指令（主机无麦克风阵列）', iot:'Wi-Fi/ZigBee/蓝牙等 8 类协议接入；HomeKit/Matter 已官宣路线图', ai:'6 TOPS 算力 · 数据分类与日常简报生成'},
+one:'2024 年最早提出「存储+计算+控制一体化」的家庭 AI 主机，CoreX 的思想源头。',
+specs:[['算力','6 TOPS'],['存储','最高 48TB'],['协议','Wi-Fi、ZigBee、蓝牙等 8 类物联协议'],['系统','EZVIZ HomePlay OS'],['模式','「1+1」与生态控制器配合，可替换现有网关并本地组网']],
+structure:'卧式方盒主机，弱存在感的弱电箱/电视柜友好设计；ID 保守，强调「塞进家里任何角落」。',
+software:'HomePlay OS；数据分类、日常简报生成、端云协同；配套智家 App：3D 可视化智能空间、智能管家语音指令、场景编排。',
+points:['品类开创者：第一次把 NAS 式存储塞进智能家居主机','48TB 本地存储直接服务摄像机录像与家庭文件','8 类协议原生接入，替代一堆杂牌网关'],
+pros:'理念领先两代产品；协议覆盖最全',
+cons:'无屏无机身语音；算力偏弱；零售渠道弱，主要绑定方案销售',
+scores:[['硬件配置',6.5],['结构/ID',6.5],['软件/AI 体验',7.0],['交互完整度',5.5],['性价比',6.5],['生态潜力',7.5]],
+pm:'PM 点评：天机证明了「AI 主机」概念成立，但 6T 算力撑不起大模型时代的体验承诺——这也是萤石两年后推出 64T 算力 CoreX 的直接原因。它的历史意义大于产品意义。'
+},
+{
+id:'ugreen-syncare-d500', brand:'UGREEN 绿联', name:'SynCare D500 智能中控屏', sub:'绿联安防生态的控制入口', cat:'panel', status:'ann', region:'gl',
+price:'未公布', priceNote:'CES 2026 发布，2026 下半年上市',
+caps:{screen:'full', voice:'part', iot:'part', ai:'part'},
+capText:{screen:'触控中控屏（尺寸未公布）', voice:'App 控制 + 实时事件播报；机身语音未明确', iot:'SynCare 自有 IoT 网络枢纽（摄像头/门铃）；Matter 未宣布', ai:'AI 多模态识别 + 智能风险分级警报（系统级）'},
+one:'绿联「NAS+安防+中控」三角版图的最后一块：补上交互屏与 IoT 入口。',
+specs:[['网络','双频 Wi-Fi'],['职能','SynCare 全系（ID500 摄像头/OD600 户外/DB600 门铃）集中管理'],['联动','与 NASync NAS 本地加密存储联动，免云服务费'],['警报','跨摄像头感知 + 基于风险分析的分级警报']],
+structure:'上墙/桌面双形态的平板式中控屏（与 Echo Hub/Aqara S1 Plus 同形态竞争），家居化设计，CES 展台信息显示为窄边框横屏。',
+software:'实时事件报告、远程控制、跨设备联动警报；与绿联 NAS 私有云本地加密存储打通；UltraColor 夜视画面墙。',
+points:['绿联生态闭环的最后一环：数据存 NAS、交互在 D500','免订阅费的本地安防存储叙事，直打 Ring/Nest 订阅制软肋','与 iDX 系列 AI NAS 联动后，等于「半个三合一主机」分体实现'],
+pros:'背靠绿联 3 亿用户的渠道与 NAS 存量',
+cons:'未上市未定价；Matter 未宣布则跨品牌受限；语音能力未知',
+scores:[['硬件配置',6.5],['结构/ID',7.5],['软件/AI 体验',7.0],['交互完整度',6.5],['性价比',7.0],['生态潜力',8.0]],
+pm:'PM 点评：D500 的战略意义大于产品本身——它宣告绿联选择「NAS + 中控屏」分体路线而非一体机路线。对想做三合一的厂商来说，这是最重要的竞品信号：生态打法可能打败单机打法。'
+},
+{
+id:'minisforum-n5max', brand:'MINISFORUM 铭凡', name:'N5 Max AI NAS', sub:'+ 同系 N5 / N5 Pro', cat:'nas', status:'sale', region:'cn',
+price:'$2,899', priceNote:'≈¥20,000 · 2026-04 预售；N5 Pro ¥6,239 / N5 ¥3,749 已售',
+caps:{screen:'none', voice:'none', iot:'none', ai:'full'},
+capText:{screen:'无屏', voice:'无机身语音', iot:'无', ai:'Ryzen AI Max+ 395 · 整机 126 TOPS · 内置 OpenClaw 本地大模型'},
+one:'把 AMD 最强 APU 塞进 NAS 的算力怪兽——AI 主机的「力大砖飞」流派。',
+specs:[['处理器','AMD Ryzen AI Max+ 395（16C32T Zen5，Radeon 8060S 40CU）'],['算力','整机 126 TOPS（NPU 50 TOPS）'],['内存','64GB LPDDR5X-8533（固定）'],['存储','5×SATA + 5×M.2，最高 200TB'],['接口','USB4 v2 80Gbps、双 10GbE、OCuLink、HDMI 2.1'],['散热/电源','5 热管 + 5 风扇；内置 250W 电源']],
+structure:'199×202×252mm 立式方箱，抽拉式主板设计便于维护；N5 系家族化金属机身，前面板极简无屏；内置电源避免了外置板砖——NAS 形态里少见的整机完成度。',
+software:'MinisCloud OS（自研 NAS 系统）+ 内置 OpenClaw 本地 AI 大模型，数据本地闭环；也支持 Linux/Windows 11，可当 AIO 生产力主机。',
+points:['消费级 NAS 里最强的本地 AI 算力（126 TOPS）','5+5 盘位 200TB + 万兆双口，存储规格同样封顶','OpenClaw 内置：本地 Agent 开箱即用，不做云依赖'],
+pros:'算力/存储双天花板；一机可当 NAS+工作站+AI 服务器',
+cons:'两万元定价直面企业级；无屏无语音无 IoT，交互零分；固定内存不可升级',
+scores:[['硬件配置',9.5],['结构/ID',8.0],['软件/AI 体验',7.0],['交互完整度',3.0],['性价比',5.0],['生态潜力',6.0]],
+pm:'PM 点评：N5 Max 证明「算力先行」路线的上限：本地跑 35B 级模型毫无压力，但它对「家庭交互」毫无野心——没有屏、没有麦克风、没有网关。它服务的是极客工作室，不是客厅。与本报告主题的关系是：<b>它把「AI 主机」的算力标杆立住了，交互与物联的空白留给了别人</b>。'
+},
+{
+id:'zspace-t6', brand:'极空间 ZSpace', name:'私有云 T6', sub:'带触控屏的移动 NAS', cat:'nas', status:'sale', region:'cn',
+price:'¥7,999', priceNote:'2025-10 发布指导价',
+caps:{screen:'full', voice:'none', iot:'none', ai:'full'},
+capText:{screen:'机身「灵控屏」触控屏', voice:'无', iot:'无', ai:'NPU 加持，独占「AI 空间」本地智能数据管理'},
+one:'主流 NAS 厂商里第一个把「触控屏」做成核心卖点的产品。',
+specs:[['定位','便携移动 NAS（内置电池/UPS 属性的移动场景设计）'],['屏幕','机身触控「灵控屏」，可直接操作与预览'],['AI','「AI 空间」：语义搜索、以图搜视频、自动归类、字幕提取与摘要（本地处理不上云）'],['同门','Z425 / Z425 轻享版：125H 处理器 + AI 空间，无屏']],
+structure:'继承 T2 系列的便携基因：小巧机身 + 触控屏 + 多接口，主打「随身数据魔盒」的升级形态；六维卖点为灵控屏、臻便携、强性能、多接口、大容量、冷又静。',
+software:'ZOS 系统 + AI 空间（与 Z425 系列独占）：视频/图片/音频深度分析提炼摘要、自然语言语义搜索、以图搜图与以图搜视频、多维度自动归类、自定义分类主题；极影视/极相册等成熟套件。',
+points:['NAS 触屏交互的品类实验：脱离手机/App 也能完成基础管理与预览','移动场景（外拍/差旅/演示）+ AI 整理的组合独特','ZOS 的易用性口碑在国产 NAS 里数一数二'],
+pros:'便携+触屏形态独占；AI 空间体验完整',
+cons:'7999 元定价高昂；无语音无 IoT；盘位/容量受便携形态限制',
+scores:[['硬件配置',7.5],['结构/ID',8.5],['软件/AI 体验',8.0],['交互完整度',5.5],['性价比',5.5],['生态潜力',6.5]],
+pm:'PM 点评：T6 的「灵控屏」是 NAS 行业对「屏幕必要性」的一次真刀真枪的投票——它把屏幕从「状态显示」升级成「交互入口」。但移动场景里手机 App 本就是更强的交互端，触屏的实际使用率存疑。这个实验数据，值得所有想做屏的 NAS 厂商蹲守复盘。'
+},
+{
+id:'zspace-z425', brand:'极空间 ZSpace', name:'Z425 / Z425 轻享版', sub:'AI 空间普惠化', cat:'nas', status:'sale', region:'cn',
+price:'¥7,999 起', priceNote:'Z425 指导价；轻享版 2026-05 上市，618 大促价更低',
+caps:{screen:'none', voice:'none', iot:'none', ai:'full'},
+capText:{screen:'无屏', voice:'无', iot:'无', ai:'酷睿 125H + NPU，完整「AI 空间」'},
+one:'把旗舰 AI 能力下放到主流价位的「AI NAS 普惠」样本。',
+specs:[['处理器','Intel Core 125H（NPU 集成）'],['AI','AI 空间全家桶：语义搜索/以图搜视频/自动归类/摘要'],['盘位','多盘位 + M.2 组合（详见官方）'],['系统','ZOS']],
+structure:'Z4 系列家族化航空铝机身，立式桌面箱，无屏设计；轻享版在存储规格上做减法换取价格下探。',
+software:'ZOS + AI 空间（与 T6 同源）；极影视 2.0、智能字幕生成、老照片修复、视频内人脸识别等。',
+points:['AI 能力完整保留、硬件做减法——典型的「旗舰技术普惠」打法','国产 NAS 销量第一阵营的渠道与口碑（2024-2025 市占率领先）'],
+pros:'AI 体验与旗舰一致；轻享版价格亲民',
+cons:'无屏无语音无 IoT；AI 依赖 NPU，大模型对话能力弱于 iDX',
+scores:[['硬件配置',7.0],['结构/ID',7.5],['软件/AI 体验',8.0],['交互完整度',3.0],['性价比',7.5],['生态潜力',6.5]],
+pm:'PM 点评：Z425 轻享版说明国产 NAS 的 AI 竞争已进入「标配化」阶段——语义搜索和智能整理很快会像当年的「相册备份」一样成为准入门槛。交互与物联，才是下一个差异化战场。'
+},
+{
+id:'huawei-x2pro', brand:'HUAWEI 华为', name:'鸿蒙智家智能主机 X2 Pro', sub:'+ 智能中控屏 S2 / 10.1″ / MINI', cat:'host', status:'sale', region:'cn',
+price:'全屋 ¥19,999 起', priceNote:'主机+中控屏随全屋方案；中控屏单品约 ¥3,000-5,000 档',
+caps:{screen:'full', voice:'full', iot:'full', ai:'full'},
+capText:{screen:'中控屏 S2 / 10.1 英寸 / MINI 多形态', voice:'小艺管家：3D 户型模糊指令、悄悄话模式', iot:'PLC-IoT + Wi-Fi 6+；Matter 深度支持（2026Q1 起特性上线）', ai:'智能主机 X2 Pro 可承载本地模型'},
+one:'「主机算力 + 中控屏交互 + PLC 物联」分体实现三合一的最成熟商用体系。',
+specs:[['主机','智能主机 X2 Pro：本地模型承载 + 全屋边缘算力'],['中控屏','S2 / 10.1 英寸 / MINI 三档，上墙+桌面形态'],['连接','PLC-IoT 电力线载波 + Wi-Fi 6+/7 分布式路由'],['语音','小艺管家：模糊指令定位设备、多轮对话、气声回应'],['Matter','官方公告：2026 年第一季度起中控屏 S2/10.1″/MINI 上线跨生态特性']],
+structure:'主机为弱电箱/柜内黑色方盒（去存在感设计）；中控屏走极简家装融合路线，与高端装修风格一体；PLC 方案把「布线」变成电力线复用——这是华为对后装市场的关键回答。',
+software:'HarmonyOS 全屋智能：1+3+N 架构；3D 户型可视化控制；场景大师语音创建复杂场景；本地+云端双决策，断网可用；小艺 AI 大模型持续升级。',
+points:['唯一把「本地模型主机」做成全屋智能标准件的大厂','PLC 免布线 + 断网可用，可靠性叙事最强','Matter 跨生态特性官宣后，鸿蒙与苹果/谷歌设备互通打开','前装（地产合作：金茂/远洋等）+ 后装双渠道'],
+pros:'体系完整度、可靠性、渠道（地产前装）行业第一梯队',
+cons:'整屋方案价格高、重安装；主机不单卖；开放度弱于 Matter 原生阵营',
+scores:[['硬件配置',8.5],['结构/ID',9.0],['软件/AI 体验',8.5],['交互完整度',9.0],['性价比',5.5],['生态潜力',9.0]],
+pm:'PM 点评：华为证明了「三合一」可以不是一个盒子而是一套体系。X2 Pro 就是「AI 主机」的地产化表达：它不做 NAS 的文件管理叙事，而是把算力藏在弱电箱里服务全屋。<b>对 NAS 厂商的启示：家庭边缘算力的买单方，可能不是数码爱好者而是装修预算</b>。'
+},
+{
+id:'aqara-s1plus', brand:'Aqara 绿米联创', name:'集悦妙控屏 S1 Plus', sub:'Matter 时代的中控屏标杆', cat:'panel', status:'sale', region:'cn',
+price:'¥999-1,299', priceNote:'首发预售价区间；升级版 2026 支持原生 Siri',
+caps:{screen:'full', voice:'full', iot:'full', ai:'part'},
+capText:{screen:'6.9 英寸全面屏（双 86 盒联排设计）', voice:'小乔语音：10 米远场唤醒、就近响应', iot:'内置高性能 Zigbee 网关 + Matter 支持 + Apple Home', ai:'小乔 AI 场景推荐与排障（轻量级）'},
+one:'国产中控屏里「屏+语音+Matter」三合一完成度最高的量产产品。',
+specs:[['屏幕','6.9 英寸全面屏，主题/看板自定义（最多 10 个看板）'],['开关','3 路继电器 + 6 路无线开关；火星技术兼容智能灯具'],['网关','Zigbee 3.0 网关（免另购）+ Matter + Apple Home'],['语音','小乔远场语音（10m），分布式就近应答；升级版原生接入 Siri'],['供电','86 底盒零火线 / USB-C']],
+structure:'双 86 联排上墙设计，可与普通开关灵活组合；接近感应亮屏（约 2.5m）、自动亮度、夜间模式；火星技术解决智能灯与物理开关断电冲突的行业难题。',
+software:'Aqara Home + QIAO UI；全屋能耗/灯控/温控/音乐看板；来访查看-对话-开门一气呵成；AI 场景推荐与排障；小乔主动提醒。',
+points:['Matter + Zigbee 网关 + HomeKit 三栈齐备，跨生态最自由','Siri 原生落地第三方中控屏（行业首次，2026 升级版）','千元价位把「全屋中控」从万元方案拉到单品可买'],
+pros:'性价比与开放性双高；Aqara 全系子设备存量庞大',
+cons:'无存储与本地大模型；AI 停留在场景推荐层级；依赖零火线安装',
+scores:[['硬件配置',8.0],['结构/ID',8.5],['软件/AI 体验',8.0],['交互完整度',9.0],['性价比',9.0],['生态潜力',8.5]],
+pm:'PM 点评：S1 Plus 是「中控屏品类」的 iPhone SE 时刻——把旗舰三合一能力压到千元。<b>它给 NAS 厂商上了一课：交互与网关的物料成本并不高，缺的是把三者放进同一产品定义的勇气</b>。'
+},
+{
+id:'orvibo-mixpad7', brand:'ORVIBO 欧瑞博', name:'MixPad 7（AI & Matter）', sub:'+ MixPad 12 / M4 / C2', cat:'panel', status:'sale', region:'cn',
+price:'¥1,988', priceNote:'渠道价 ¥1,688 左右；MixPad 12 双频版 ¥3,699；M4 ¥770；C2 首发 ¥699',
+caps:{screen:'full', voice:'full', iot:'full', ai:'part'},
+capText:{screen:'7 英寸触控屏（MixPad 12 为 12.3 英寸级大屏）', voice:'小欧管家 3.0：免唤醒词直接发号施令', iot:'Zigbee 3.0 + 蓝牙 + Matter（行业首款 Matter 语音屏）', ai:'HOME AI 原生主动智能系统'},
+one:'「为一块屏死磕四年九款」的中控屏原教旨主义者，Matter 语音屏的行业首发。',
+specs:[['屏幕','7 英寸触控；MixPad 12 升级大尺寸双频版'],['协议','Zigbee 3.0 / 蓝牙 / Matter / 红外遥控'],['灯控','4 路灯控直连，内置红外遥控传统家电'],['语音','小欧管家 3.0 免唤醒 + 触屏 + App 多模态'],['系统','HOME AI 主动智能']],
+structure:'上墙 86 系面板家族设计，多尺寸多价位矩阵（C2 单火线极速换装是后装杀手锏）；ID 走「墙面艺术品」路线，强调与家装融合。',
+software:'HOME AI 原生主动智能：主动场景推荐、能耗管理；MixPad 系与欧瑞博全屋方案（照明/遮阳/暖通）深度打包。',
+points:['行业首款宣布支持 Matter 的家居智能语音屏（2022）','C2 单火线 86 盒换装把后装门槛打到最低（¥699）','免唤醒词语音是最激进也最有争议的交互实验'],
+pros:'中控屏品类定义者；全价位矩阵；地产/家装渠道深厚',
+cons:'生态相对封闭（自有体系优先）；无存储无本地大模型；品牌势能被大厂挤压',
+scores:[['硬件配置',7.5],['结构/ID',8.5],['软件/AI 体验',7.5],['交互完整度',8.5],['性价比',7.5],['生态潜力',7.5]],
+pm:'PM 点评：欧瑞博证明了「屏」可以成为全屋智能的入口级品类，但也演示了<b>入口焦虑</b>：当小米、华为、Aqara 用生态和性价比碾压而来，单一中控屏品牌的护城河越来越依赖前装渠道与家装设计话语权。'
+},
+{
+id:'xiaomi-panel-max', brand:'Xiaomi 小米', name:'智能中控屏 Max', sub:'米家第一款官方大屏中控', cat:'panel', status:'sale', region:'cn',
+price:'¥2,499', priceNote:'众筹价 ¥1,999（2025-09 开售）',
+caps:{screen:'full', voice:'full', iot:'part', ai:'full'},
+capText:{screen:'10.1 英寸 1920×1200 触控屏 + 实体旋钮', voice:'超级小爱（AI 大模型）：一句话最多 5 条指令、多轮连续对话可打断', iot:'内置小米 Mesh 2.0 网关 + 本地中枢能力（断网可控）；Matter 走米家桥接生态', ai:'内置 AI 大模型问答（生活/健康/科普）'},
+one:'米家生态的官方「墙面入口」：旋钮+大屏+中枢网关三位一体，把本地化做成卖点。',
+specs:[['屏幕','10.1″ 1920×1200，磨砂玻璃 + CD 纹，超声波 1m 感应亮屏'],['旋钮','实体旋钮：灯光亮度/色温、空调温度精细调节'],['网关','小米 Mesh 2.0（响应 +50%、组网时间 -50%）+ 本地中枢，主备中枢自动组网'],['摄像头','500 万像素（物理遮蔽拨片），远程看家'],['通话','微信语音/视频双向通话；家庭传声广播'],['供电','86 底盒零火线；有线网口 + 双频 Wi-Fi']],
+structure:'上墙大屏 + 右侧圆形旋钮的「不对称」ID（争议点也是记忆点）；纤薄机身、隐藏式走线、漫反射光反馈；兼容标准 86 底盒但需预留 17cm 空间。',
+software:'米家 App 体系；超级小爱大模型（连续对话、上下文继承、一句话多指令、语音创建自动化）；三路灯光直连；本地自动化断网执行；米家安全芯片硬件级加密。',
+points:['小米官方第一台大屏中控，直接收割米家 3000+ 设备生态','本地中枢能力下放（此前需单独购买 ¥349 中枢网关）','旋钮是对「语音之外需要确定性精细调节」的回答——老人友好','微信视频通话切中老人孩子联系场景'],
+pros:'生态规模无敌；本地中枢+网关一体化诚意足；定价仅为海外同级一半',
+cons:'Matter 依赖米家桥接而非原生控制器；生态绑定米家；大屏上墙对装修有要求',
+scores:[['硬件配置',8.5],['结构/ID',8.0],['软件/AI 体验',8.5],['交互完整度',9.0],['性价比',8.5],['生态潜力',9.0]],
+pm:'PM 点评：中控屏 Max 是「生态碾压」打法的教科书：<b>当设备连接数领先一个数量级，中控只是生态的变现入口</b>。它对 Matter 的冷淡（用自有 Mesh 2.0 + 中枢对冲）说明：对生态霸主而言，Matter 是防御选项而非进攻武器。'
+},
+{
+id:'echo-show8', brand:'Amazon', name:'Echo Show 8（3rd Gen）', sub:'+ Show 11 / 15 / 21 家族', cat:'panel', status:'sale', region:'gl',
+price:'$149.99', priceNote:'Show 11 $219.99 · Show 15 $299.99 · Show 21 $399.99',
+caps:{screen:'full', voice:'full', iot:'full', ai:'part'},
+capText:{screen:'8.7 英寸 HD 触控屏（Show 15 为 15.6″）', voice:'Alexa 远场语音（Alexa+ 大模型升级中）', iot:'Matter 控制器 + Thread 边界路由器 + Zigbee 协调器，三栈全内置', ai:'Alexa+ 生成式 AI（订阅/分层）'},
+one:'全球销量最大的「三合一」智能屏：Matter 控制器、Thread 边界路由、Zigbee 网关一次给齐。',
+specs:[['屏幕','8.7″ HD（Show 15：15.6″ 可上墙；Show 21：21″）'],['IoT','Zigbee + Matter 控制器 + Thread Border Router 全内置'],['音频','空间音频/房间填充音效'],['隐私','摄像头物理开关（Show 15）'],['生态','Alexa 技能 + Ring 安防 + Fire TV 内容']],
+structure:'织物背壳 + 悬浮屏的家居化设计（Show 15/21 为相框式上墙）；Amazon 的 ID 策略明确：不是数码产品，是「会说话的家居摆件」。',
+software:'Alexa 语音 + Routines 自动化；智能家居仪表盘；视频通话/Drop In；Prime Video/音乐；Alexa+ 生成式升级逐步推送。',
+points:['三栈 IoT 内置的最低价入口（$149）','Matter+Thread+Zigbee 全本地，断网可控 Zigbee 设备','Echo 家族超 1 亿台 Matter-enabled 存量（Amazon 2023 官宣）'],
+pros:'IoT 协议完整度全球第一梯队；价格屠夫；内容生态厚',
+cons:'无本地存储；Alexa+ 大模型分批且部分付费；国内不可用',
+scores:[['硬件配置',7.5],['结构/ID',8.0],['软件/AI 体验',8.0],['交互完整度',9.0],['性价比',9.0],['生态潜力',8.5]],
+pm:'PM 点评：Echo Show 系列用 $149 证明了「屏+语音+全网关」可以做到白菜价。<b>NAS 厂商若担心三合一的成本，Amazon 的 BOM 控制能力就是参考答案</b>。它缺的恰恰是 NAS 的命根子——本地数据。'
+},
+{
+id:'echo-hub', brand:'Amazon', name:'Echo Hub', sub:'专业向墙面中控', cat:'panel', status:'sale', region:'gl',
+price:'$179.99',
+caps:{screen:'full', voice:'full', iot:'full', ai:'part'},
+capText:{screen:'8 英寸触控屏（上墙/支架）', voice:'Alexa 远场语音', iot:'Matter 控制器 + Thread BR + Zigbee + 红外', ai:'Alexa+ 体系'},
+one:'Echo 家族里最像「专业中控」的一款：为上墙和多房间管理而生。',
+specs:[['屏幕','8″ 触控，上墙优先设计'],['IoT','Zigbee + Matter + Thread BR + IR 红外'],['安装','支持 PoE 供电改装/墙面预埋']],
+structure:'平板相框式上墙设计，厚度控制优秀；与 Show 系列错位：Show 是「会控制的音箱」，Hub 是「会说话的开关」。',
+software:'多房间设备地图、安防画面墙、Routines 快捷面板。',
+points:['PoE 供电友好，精装/后装都合适','IR + Zigbee + Thread 通吃新旧家电'],
+pros:'专业中控形态 + 消费级价格',
+cons:'音频弱于 Show；内容娱乐属性弱',
+scores:[['硬件配置',7.5],['结构/ID',8.0],['软件/AI 体验',7.5],['交互完整度',8.5],['性价比',8.5],['生态潜力',8.0]],
+pm:'PM 点评：Echo Hub 与欧瑞博 MixPad、Aqara S1 是同一物种的不同生态表达——这个形态（8 寸上墙 + 语音 + 全网关）已被三个生态各自验证，<b>它是「家庭交互入口」竞争的标准答案形态</b>。'
+},
+{
+id:'nest-hub-max', brand:'Google', name:'Nest Hub Max', sub:'+ Nest Hub 2nd Gen', cat:'panel', status:'sale', region:'gl',
+price:'$229', priceNote:'Nest Hub 2 代 $99.99',
+caps:{screen:'full', voice:'full', iot:'full', ai:'part'},
+capText:{screen:'10 英寸触控屏 + 摄像头', voice:'Google Assistant（Gemini 迁移中）', iot:'Matter 控制器 + Thread 边界路由器（无 Zigbee）', ai:'Gemini for Home 逐步推送'},
+one:'Google 阵营的三合一守门员：摄像头+大屏+Thread，但 Zigbee 缺位。',
+specs:[['屏幕','10″ 触控；Nest Hub 2 为 7″'],['摄像头','内置（视频通话/看家），无物理遮蔽'],['IoT','Matter 控制器 + Thread BR（Zigbee 需另购）'],['AI','Gemini 家居控制：自然语言对话式控制上线中']],
+structure:'布艺底座+悬浮屏，家居感强；环境光自适应（Ambient EQ）显示效果是行业标杆。',
+software:'Google Home 体系；Nest 安防联动；YouTube 系内容；睡眠感知（Hub 2 的 Soli 雷达）。',
+points:['Gemini 入局让语音从命令式走向对话式','Nest 摄像头门铃生态深度联动'],
+pros:'显示与视觉体验最佳；Gemini 潜力大',
+cons:'无 Zigbee；产品线更新慢、国内不可用',
+scores:[['硬件配置',7.5],['结构/ID',8.5],['软件/AI 体验',8.0],['交互完整度',8.5],['性价比',7.5],['生态潜力',8.0]],
+pm:'PM 点评：Google 的克制（不做 Zigbee、慢更新）反映其对「中枢」的赌注全押在 Gemini 上：<b>如果对话式 AI 足够强，协议层的短板可以被体验层掩盖</b>——这是与 Amazon「协议全都要」截然相反的路线。'
+},
+{
+id:'apple-homepad', brand:'Apple 苹果', name:'HomePad（J490，传闻）', sub:'带屏 HomePod · homeOS', cat:'panel', status:'rumor', region:'gl',
+price:'传闻 ¥3,000-3,500', priceNote:'多次延期；2026 秋季为最新窗口（Kosutami/彭博系爆料）',
+caps:{screen:'full', voice:'full', iot:'full', ai:'full'},
+capText:{screen:'约 7 英寸方形触控屏（厚边框）', voice:'重构版 Siri + Apple Intelligence（上下文感知）', iot:'N1 芯片 Thread 无线电 + Matter 1.5（含摄像头品类）', ai:'A18 芯片承载 Apple Intelligence'},
+one:'跳票两年的苹果家庭中枢：若落地，就是「三合一」里隐私叙事最强的玩家。',
+specs:[['芯片','A18 + N1 无线协处理器（Thread）'],['屏幕','约 7″ 方屏，1080P 超广角前置摄像头（Center Stage/FaceTime）'],['识别','Face ID 多用户识别，个性化界面切换'],['系统','homeOS（tvOS 基底，类 watchOS 圆型图标布局；无独立 App Store，小组件投射）'],['形态','桌面底座/壁挂/MagSafe 磁吸；二代传闻机械臂跟随底座']],
+structure:'爆料显示测试过 iMac G4 半球底座与 HomePod 两种底座原型；顶部屏幕 + 音箱底座的「带屏 HomePod」形态；内置电池可短时离电使用。',
+software:'homeOS：小组件投射 iPhone/Mac 内容；App Intents 让 Siri 直接操作第三方应用；HomeKit/Apple Home 全屋控制；安防摄像头（含自研门铃/摄像头传闻）深度整合。',
+points:['苹果生态第一个原生可视化家居入口，补齐 HomePod 无屏短板','Face ID 多用户识别：看到谁就给谁的界面——交互范式升级','Matter 1.5 摄像头品类支持，安防叙事与隐私叙事合流','延期本身成为行业信号：对话式 AI 的可靠性是三合一产品的真正门槛'],
+pros:'生态整合度与隐私品牌力无敌；Face ID 多用户是杀手锏',
+cons:'仍是传闻；Siri 重构两度跳票；定价预计高端；封闭生态',
+scores:[['硬件配置',8.5],['结构/ID',9.0],['软件/AI 体验',8.5],['交互完整度',9.5],['性价比',5.5],['生态潜力',9.5]],
+pm:'PM 点评：HomePad 的反复延期暴露了三合一产品的<b>真门槛不是硬件而是对话式 AI 的可靠性</b>。苹果宁可跳票两年也不发一个「会出错的 Siri」——这给所有赶工的厂商提了个醒：三合一的体验下限由最弱的语音环节决定。'
+},
+{
+id:'tuya-tuyago5', brand:'Tuya 涂鸦智能', name:'TuyaGo 5 寸智慧中控屏 L', sub:'出海方案商的样板屏', cat:'panel', status:'sale', region:'gl',
+price:'方案/OEM 定价', priceNote:'2023 北美发布；以 Powered by Tuya 方案出货',
+caps:{screen:'full', voice:'full', iot:'full', ai:'part'},
+capText:{screen:'5 英寸触控屏', voice:'Alexa Built-in 直接唤醒', iot:'Matter + Zigbee + Wi-Fi/蓝牙 + 485/以太网，断网本地可控', ai:'涂鸦大模型能力随平台迭代'},
+one:'白板方案里的三合一：任何一个品牌都能基于它贴牌出自己的中控屏。',
+specs:[['屏幕','5″ 触控'],['语音','Alexa Built-in'],['IoT','Matter + Zigbee + 多接口，断网本地控制'],['模式','Powered by Tuya OEM/ODM']],
+structure:'标准上墙面板，为 B 端定制的公版 ID；涂鸦的价值不在 ID 而在「一周出样」的方案速度。',
+software:'涂鸦 IoT 开发者平台：跨品类/跨协议/跨生态管理；App 与面板同步；面向北美的 Alexa/Matter 合规套件。',
+points:['让中小品牌零研发拥有 Matter 中控屏','485/以太网接口照顾工程与酒店场景'],
+pros:'方案化速度无敌；协议最全',
+cons:'C 端无品牌力；体验一致性取决于贴牌方',
+scores:[['硬件配置',6.5],['结构/ID',6.0],['软件/AI 体验',7.0],['交互完整度',7.5],['性价比',8.0],['生态潜力',8.0]],
+pm:'PM 点评：涂鸦的存在说明「三合一中控屏」已经<b> commoditize（商品化）</b>——门槛不在能不能做，而在生态与体验。这对新入局者既是好消息（供应链成熟）也是坏消息（差异化更难）。'
+},
+{
+id:'switchbot-hub3', brand:'SwitchBot', name:'Hub 3', sub:'+ Hub 2（小屏 + Matter 桥）', cat:'host', status:'sale', region:'gl',
+price:'$99.99 档', priceNote:'Hub 2 $69.99；Hub 3 2025 上市',
+caps:{screen:'part', voice:'none', iot:'full', ai:'none'},
+capText:{screen:'小尺寸信息屏（温湿度/状态）', voice:'无机身语音（可联动 Alexa/Google/Siri）', iot:'Matter 桥接器：把红外/蓝牙 SwitchBot 设备桥入 Matter', ai:'无'},
+one:'「桥接派」代表：不造生态，把存量红外家电和自家蓝牙设备翻译成 Matter。',
+specs:[['IoT','Matter Bridge + IR 红外学习 + 蓝牙子设备'],['屏幕','小型 LCD 状态/环境信息显示'],['传感','温湿度/光照传感']],
+structure:'桌面小方块，日式极简；一块小屏只显示环境数据——证明「屏」在网关上的最低限度用法。',
+software:'SwitchBot App + Matter 桥；场景联动；与 Alexa/Google/HomeKit 多平台并行。',
+points:['红外桥接让老空调老电视秒变 Matter 设备','便宜、开放、跨生态'],
+pros:'桥接定位清晰，价格亲民',
+cons:'无语音无 AI；屏只是点缀',
+scores:[['硬件配置',6.0],['结构/ID',7.5],['软件/AI 体验',6.5],['交互完整度',5.0],['性价比',8.5],['生态潜力',7.0]],
+pm:'PM 点评：SwitchBot 验证了 Matter 的另一种商业价值——<b>不做控制器做桥接器</b>。对 NAS 厂商的启示：即使不做完整 IoT 中控，内置一个 Matter Bridge 也能让存量家电成为自家生态的「数据燃料」。'
+},
+{
+id:'aqara-hub-m3', brand:'Aqara 绿米联创', name:'Hub M3', sub:'无屏无语音的纯血 Matter 中枢', cat:'host', status:'sale', region:'gl',
+price:'$129.99 / ¥899 档',
+caps:{screen:'none', voice:'none', iot:'full', ai:'none'},
+capText:{screen:'无屏', voice:'无', iot:'Matter 控制器 + Thread 边界路由器 + Zigbee 3.0（128 子设备）+ IR', ai:'无'},
+one:'把「网关」做到极致的对照组：证明 IoT 能力本身不需要屏和语音也能成立。',
+specs:[['协议','Matter 控制器 + Thread 1.3 BR + Zigbee 3.0 + 蓝牙 5.0 + IR'],['容量','Zigbee 子设备 128 个'],['网络','千兆网口 + 双频 Wi-Fi'],['平台','Apple/Google/Alexa/SmartThings 多管理']],
+structure:'带网口的桌面小盒，PoE 友好；纯工具型 ID。',
+software:'Aqara Home；Zigbee→Matter 桥接；多管理（Multi-Admin）分享。',
+points:['一个盒子替代一堆生态网关','Matter 多管理让全家不同手机都能控制'],
+pros:'协议完整度与稳定性口碑极佳',
+cons:'无任何交互界面，纯幕后设备',
+scores:[['硬件配置',7.5],['结构/ID',7.0],['软件/AI 体验',7.0],['交互完整度',2.0],['性价比',8.0],['生态潜力',8.0]],
+pm:'PM 点评：M3 是「能力解耦」的参照系：它证明网关可以独立存在。但看销量与讨论热度，<b>纯网关是极客市场，屏+语音才是大众市场</b>——这解释了 Aqara 为何把 M3 的网关能力同时塞进了 S1 Plus 中控屏。'
+},
+{
+id:'homey-pro', brand:'Athom Homey', name:'Homey Pro (2023)', sub:'欧洲全协议极客中枢', cat:'host', status:'sale', region:'gl',
+price:'€399',
+caps:{screen:'none', voice:'none', iot:'full', ai:'none'},
+capText:{screen:'无屏', voice:'无', iot:'Matter/Thread/Zigbee/Z-Wave/BLE/IR/Wi-Fi 七协议', ai:'无（本地 Flow 自动化引擎）'},
+one:'协议收集癖的终点：七种无线协议一颗球全包。',
+specs:[['协议','Matter、Thread、Zigbee、Z-Wave、BLE、IR、Wi-Fi'],['平台','全本地 Flow 自动化 + 50,000+ 设备库'],['形态','球形桌面主机（RGB 光环）']],
+structure:'标志性发光球体，客厅摆件化 ID；无屏无麦，一切交互在 App。',
+software:'Homey Flow/Advanced Flow 可视化自动化；Homey Energy 能耗；全本地运行可选。',
+points:['协议数量行业第一','本地优先 + 无订阅（Pro 买断）'],
+pros:'协议最全、自动化引擎强大',
+cons:'€399 高价；无交互界面；小众',
+scores:[['硬件配置',8.0],['结构/ID',8.5],['软件/AI 体验',7.5],['交互完整度',2.0],['性价比',5.5],['生态潜力',7.0]],
+pm:'PM 点评：Homey Pro 说明「协议全」在欧美极客圈能卖出溢价，但它也划定了天花板：<b>没有交互层的中枢，永远是发烧友玩具</b>。'
+},
+{
+id:'ha-voice-green', brand:'Home Assistant', name:'HA Green + Voice PE 组合', sub:'开源阵营的官方答案', cat:'host', status:'sale', region:'gl',
+price:'$99 + $59', priceNote:'Green 主机 + Voice Preview Edition 语音卫星；SkyConnect/Connect ZBT 提供 Thread',
+caps:{screen:'none', voice:'full', iot:'full', ai:'part'},
+capText:{screen:'无屏', voice:'Voice PE：双麦阵列 + 物理静音开关 + 灯带旋钮（$59/¥379）', iot:'HA + Connect ZBT-1：Matter/Thread/Zigbee（SkyConnect）', ai:'Assist + Whisper/Piper 本地语音；可接 Ollama 本地 LLM'},
+one:'开源世界用「主机+语音卫星+无线棒」拼出的三合一——也是最接近 NAS 合体的那条路。',
+specs:[['主机','HA Green（RK3566/4GB/32GB）或任意 NAS/迷你主机部署 HAOS'],['语音','Voice PE：物理切断麦克风、3.5mm 音频输出、Grove 扩展'],['IoT','Connect ZBT-1（Thread/Zigbee）+ Matter Server 官方组件'],['AI','Assist 意图引擎 + 本地 STT/TTS；N100 以上可跑离线 LLM 对话']],
+structure:'分体式：小方盒主机 + 掌心语音卫星 + USB 无线棒；Voice PE 的透明背壳 + 灯带 + 旋钮是开源硬件里少见的完成度。',
+software:'Home Assistant：3,000+ 集成、可视化自动化、Matter/Zigbee2MQTT/Z-Wave JS 全栈；完全本地、无订阅。',
+points:['唯一「数据、语音、IoT」全部本地且全部开源的体系','可以跑在任意 NAS 上——NAS 厂商与 HA 的暧昧关系由此而来','Voice PE 证明官方语音硬件可以做到 $59'],
+pros:'自由度与隐私天花板；社区生态无敌',
+cons:'拼装门槛高；无屏；需要折腾，非大众产品',
+scores:[['硬件配置',6.5],['结构/ID',7.5],['软件/AI 体验',8.5],['交互完整度',6.0],['性价比',8.5],['生态潜力',8.5]],
+pm:'PM 点评：HA 组合是本报告的「开源对照组」：它用三个盒子实现了所有大厂想做的一体化，但把成本转嫁给了用户的折腾时间。<b>NAS 厂商的官方机会正是：把 HA 的灵活性封装成开箱即用</b>——绿联们已经在这条路上。'
+},
+{
+id:'ugreen-dxp4800', brand:'UGREEN 绿联', name:'DXP4800 Plus（代表 DXP 系）', sub:'可自建 HA 的主流 NAS', cat:'nas', status:'sale', region:'cn',
+price:'¥2,599 档',
+caps:{screen:'none', voice:'none', iot:'part', ai:'part'},
+capText:{screen:'无屏（前置 LED 状态灯）', voice:'无', iot:'Docker 部署 Home Assistant + USB 无线棒可实现 Matter/Zigbee（用户自建）', ai:'UGOS Pro 相册 AI（人脸/场景识别）'},
+one:'「能力都在，就差官方集成」的大众 NAS 样本——自建玩家的三合一底座。',
+specs:[['处理器','Intel N 系/酷睿级（视型号）'],['盘位','4×SATA + 2×M.2'],['网络','2.5GbE/10GbE 视型号'],['系统','UGOS Pro（Docker/虚拟机支持）']],
+structure:'航空铝卧式四盘位方箱，家族式黑灰配色；免工具硬盘架；LED 状态灯而非屏幕。',
+software:'UGOS Pro：相册/影院/下载/Docker/虚拟机；社区教程普遍用它跑 Home Assistant 做家庭中枢。',
+points:['2024-2025 国内消费级 NAS 销量第一阵营','Docker 自由度 = 事实上的 IoT 主机'],
+pros:'性价比与渠道强；可玩性高',
+cons:'所有三合一能力都需用户自建',
+scores:[['硬件配置',7.5],['结构/ID',7.5],['软件/AI 体验',7.0],['交互完整度',2.5],['性价比',8.0],['生态潜力',7.0]],
+pm:'PM 点评：DXP 系列代表了沉默的大多数：<b>硬件上什么都能干，官方什么都不承诺</b>。社区自发跑 HA 的热度，就是 NAS 厂商做官方 IoT 集成最硬的需求证据。'
+}
+];
+
+const EDGES = [
+{n:'Apple HomePod 2 / mini', t:'语音+Matter，无屏', d:'$299/$99，Thread 边界路由 + Siri，音质优先。苹果的「半三合一」存量底座——HomePad 传闻的铺垫。'},
+{n:'Samsung SmartThings Station', t:'Matter 中枢，无屏无语音', d:'$59.99，Matter 控制器 + Thread BR + Zigbee，带一个可编程按钮；三星把中枢做成了充电器大小。'},
+{n:'Samsung 显示器 M80D', t:'屏+网关+语音的显示器', d:'¥3,399，内置 SmartThings 网关（Matter 控制器 + Thread BR + Zigbee），遥控器+语音控制——证明「屏+网关」可以寄生在任何显示设备上。'},
+{n:'萤石智能中控屏 SP4 / SP10', t:'屏+语音+自有网关', d:'萤石系中控屏（拍一拍交互、离线语音、视频通话），Matter 随萤石生态路线图推进；与天机/CoreX 组成全屋体系。'},
+{n:'萤石 CS-A3 网关', t:'Matter 桥，无屏', d:'¥299，萤石 2025 中枢网关：Matter 链接 + Zigbee 3.0 全系 + 局域网互联。'},
+{n:'Yeelight Pro 易来中控屏', t:'屏+语音+米家/Matter 路线', d:'易来高端全屋智能中控屏，米家与 Matter 双线布局，灯光基因最强。'},
+{n:'华为鸿蒙智家中控屏 S2 / MINI', t:'随 X2 Pro 主表', d:'见主表 #8：中控屏是华为体系的交互面，主机是算力面。'},
+{n:'小度智能屏 / 小度中控屏 C4', t:'屏+语音，Matter 缺位', d:'百度系带屏音箱与中控，DuerOS 语音强，但 IoT 走自家方案，Matter 原生支持未见。'},
+{n:'冰鲸 ZimaCube / ZimaBoard', t:'NAS 形态，HA 生态', d:'Kickstarter 明星创作者 NAS，ZimaOS 应用商店一键装 Home Assistant；无屏无语音，靠社区生态补 IoT。'},
+{n:'TerraMaster / Asustor 部分带 LCD 型号', t:'状态屏 NAS', d:'铁威马/华芸部分企业向型号带 LCD 状态屏（IP/温度显示），证明「屏幕=运维信息窗」的传统用法仍在，但无交互属性。'},
+{n:'群晖 Synology / 威联通 QNAP', t:'三项全无的守成者', d:'两大传统 NAS 厂至今无屏、无语音、无原生 Matter；DSM/QTS 可虚拟机跑 HA。它们的按兵不动，正是新势力的机会窗口。'},
+{n:'akubela HyPanel / 摩根等高端总线屏', t:'大宅定制屏', d:'KNX 总线 + Matter 兼容的高端中控屏，单品数千至数万元，服务别墅市场——验证高端三合一的付费意愿。'}
+];
+
+const ESSAYS = [
+{
+no:'壹', title:'屏幕：NAS 需要一块屏吗？', sub:'从「状态窗」到「交互面」的阶梯', body:`
+<h5>1. 屏幕在主机类设备上的三个层级</h5>
+<ul>
+<li><b>L0 状态灯 / LCD 段码屏</b>——铁威马、华芸的老传统：IP 地址、温度、告警。价值是「运维可见」，成本几乎为零，但交互价值为零。</li>
+<li><b>L1 信息/品牌屏</b>——绿联 iDX6011 Pro 的 3 寸 LCD：显示运行状态、强化「这是一台有生命的设备」的心理暗示。本质是 ID 语言的一部分。</li>
+<li><b>L2 交互屏</b>——极空间 T6 灵控屏、小米中控屏 Max：可以直接完成管理、预览、控制。屏幕从「窗户」变成「门」。</li>
+</ul>
+<h5>2. 必要性论证：屏幕解决什么真问题？</h5>
+<p>三个无法被手机 App 替代的场景：<b>① 无手机情境</b>——客人、老人、小孩没有装 App 也没有账号，一块上墙/上桌的屏是唯一的公共交互面；<b>② 告警与状态的一瞥价值（glanceability）</b>——硬盘报错、门铃触发、录像摘要，抬头即见比掏手机快一个数量级；<b>③ 信任的具象化</b>——NAS 是黑盒，屏幕让「它正在保护我的数据」这件事可见，这是黑盒设备建立用户信任的捷径。</p>
+<h5>3. 反面论证：为什么大多数 NAS 不做屏？</h5>
+<ul>
+<li>NAS 的传统位置是弱电箱/机柜/书房角落——<b>看不见的地方不需要屏</b>。屏幕战略的前提是「上桌战略」：设备必须先在 ID 上配进客厅。</li>
+<li>屏幕意味着常亮、触控、UI 维护，对以稳定为命的存储系统是额外故障面与软件成本。</li>
+<li>手机 App 的交互上限远高于小屏，极客用户会用脚投票。</li>
+</ul>
+<h5>4. PM 判断</h5>
+<div class="verdict-line">屏幕对 NAS/AI 主机不是必需品，而是<b>场景声明</b>：它宣告这台设备属于客厅而非机柜。正确姿势是「分级配置」——状态屏做标配（成本 ¥30 级，信任收益大），交互屏做高配或选配件，且必须绑定「无手机公共场景」（门铃查看、家庭留言、相册轮播）才有存在意义。为屏幕而屏幕，是 T6 正在替全行业验证的赌注。</div>`
+},
+{
+no:'贰', title:'语音：本地语音交互的价值与代价', sub:'从「遥控器替代品」到「家庭 AI 的嘴和耳朵」', body:`
+<h5>1. 语音在两条产品线上的不同角色</h5>
+<ul>
+<li><b>中控屏的语音</b>（Echo/Aqara/小米）：是「开关的延伸」——把灯、空调、窗帘的物理操作变成一句话。价值 = 操作路径缩短。</li>
+<li><b>NAS/AI 主机的语音</b>（Uliya/Home Vita）：是「数据的入口」——「找到去年露营的视频」「把这段录音整理成会议纪要」。价值 = 数据检索零门槛，这是纯语音做不到、必须配合本地大模型的新物种。</li>
+</ul>
+<h5>2. 用户价值的三层金字塔</h5>
+<ul>
+<li><b>底层：无障碍与普惠</b>——老人不会用 App、小孩没有手机、双手被占用（做饭/抱娃）。语音是数字包容性的最后一块拼图，小米中控屏 Max 的微信语音通话、Aqara 小乔的 10 米远场都在服务这层。</li>
+<li><b>中层：效率</b>——一句话多指令（小米：一句话 5 条）、免唤醒（欧瑞博）、一句话建场景（萤石 CoreX），把智能家居从「配置工程」变成「说话」。<b>语音是自动化从极客走向大众的唯一桥梁</b>。</li>
+<li><b>顶层：隐私</b>——这是 NAS/AI 主机独有的牌：云端语音助手意味着家里永远有一只联网的耳朵；本地 STT + 本地 LLM（绿联 Uliya、HA 的 Whisper/Piper 路线、苹果端侧 Siri）让语音交互第一次可以「不出家门」。<b>隐私敏感用户愿意为本地语音支付溢价</b>——Voice PE 物理静音开关的设计细节证明厂商深谙此道。</li>
+</ul>
+<h5>3. 反面论证：语音的债务</h5>
+<ul>
+<li>误唤醒与识别错误在多人多设备的客厅里被放大；苹果为 Siri 重构两度推迟 HomePad，说明<b>语音的体验下限决定整机口碑</b>。</li>
+<li>麦克风阵列 + 扬声器 + 声学结构的 BOM 与 ID 成本，对追求静音散热的 NAS 是结构难题（麦克风怕风扇噪声）。</li>
+<li>语音指令的可发现性差：用户不知道「能对它说什么」，需要屏幕或 App 引导——这就是语音必须与屏共存的原因。</li>
+</ul>
+<h5>4. PM 判断</h5>
+<div class="verdict-line">语音对 NAS/AI 主机的必要性是<b>「AI 时代的必然」而非「当下的必需」</b>：当本地大模型让「跟自己的数据对话」成立，语音就是最自然的输入方式。落地建议是麦克风阵列与扬声器做模块化预留（声学仓独立于风道），先支持「语音备忘录转录、语音检索」这类异步、低容错要求的场景建立习惯，再推进实时控制。苹果的谨慎是对的：宁可晚，不可错。</div>`
+},
+{
+no:'叁', title:'原生 IoT / Matter 网关：主机的「第三权力」', sub:'为什么网关必须长在硬件里，而不是装在 Docker 里', body:`
+<h5>1. 为什么「软件可装」不等于「具备」？</h5>
+<p>本报告判定标准的核心理由：Docker 里跑 Home Assistant + USB 无线棒，技术上任何 NAS 都能变 Matter 中枢，但这意味着<b>三个隐性成本</b>——USB 无线棒的驱动兼容（QNAP 不自动加载串口驱动这类坑是社区日常）、容器/虚拟机的维护责任转移给用户、以及最关键的：<b>没有硬件天线的网关是残血网关</b>。Zigbee/Thread 是射频工程，天线位置、屏蔽、功率校准决定覆盖与稳定性，这些只能在硬件定义阶段解决。Aqara M3 与 Echo Show 的内置方案，射频表现不是 USB 棒能比的。</p>
+<h5>2. 原生网关的用户价值</h5>
+<ul>
+<li><b>断网生存</b>——云网关断网即瘫痪；本地 Matter 控制器 + 本地自动化让家庭在断网时照常运转（小米中枢、华为双决策、欧瑞博断网可控都在打这张牌）。对「家庭基础设施」级产品，这是及格线。</li>
+<li><b>跨生态自由</b>——Matter 多管理让一台主机同时服务 iPhone 的 Home、安卓的 Google Home 和 Alexa。用户的设备选择权第一次与生态解耦。</li>
+<li><b>数据汇聚的同址性</b>——这是 NAS/AI 主机独有的协同：门铃录像进 NAS、传感器数据喂养本地模型、能耗数据驱动自动化。<b>IoT 数据与文件数据在同一硬盘上相遇，本地 AI 才有燃料</b>。萤石 CoreX 的「录像→摘要→自然语言检索」就是这条链路的第一个完整样本。</li>
+</ul>
+<h5>3. 反面论证：网关内卷的现实</h5>
+<ul>
+<li>每个家庭平均已有 2-3 个 Matter 控制器（Echo、HomePod、路由器），再内置一个是冗余。对已有生态的用户，「多一个网关」可能是负资产（Thread 网络分裂、信道冲突）。</li>
+<li>Matter 认证与多协议射频推高 BOM 与认证周期；Zigbee/Thread 双协议还要解决共存干扰。</li>
+<li>国内现实：米家/鸿蒙两大封闭生态占据主流，Matter 在国内更多是「出海门票」而非「本地刚需」（OneConnect 智家标准 2026 的登场进一步分化路线）。</li>
+</ul>
+<h5>4. PM 判断</h5>
+<div class="verdict-line">原生 IoT 网关是 NAS/AI 主机从「数据仓库」升格为「家庭基础设施」的<b>资格认证</b>，但策略应分层：出海产品必须原生 Matter（控制器+Thread BR），这是货架门票；国内产品可以选择「桥接优先」（Matter Bridge + 自有协议）控制成本。无论哪条路，天线级集成（而非软件兼容）都是体验分水岭。最可能的终局形态：<b>NAS 负责 Matter 控制器 + 数据，中控屏负责 Thread/Zigbee 射频与交互</b>——绿联 iDX + SynCare D500 已经画出了这张草图。</div>`
+}
+];
+/* ================= APP ================= */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const capIcon=l=>l==='full'?'<span class="dot d-full"></span>':l==='part'?'<span class="dot d-part"></span>':'<span class="dot d-none"></span>';
+const capName={screen:'屏幕',voice:'语音',iot:'IoT网关',ai:'本地AI'};
+const stBadge={sale:'<span class="badge b-sale">在售</span>',ann:'<span class="badge b-ann">已发布未售</span>',rumor:'<span class="badge b-rumor">在研/传闻</span>'};
+const state={cat:'all',status:'all',region:'all',cap:null};
+
+function filtered(){
+  return PRODUCTS.filter(p=>
+    (state.cat==='all'||p.cat===state.cat)&&
+    (state.status==='all'||p.status===state.status)&&
+    (state.region==='all'||p.region===state.region)&&
+    (!state.cap||p.caps[state.cap]==='full')
+  );
+}
+function capPip(p,k){const l=p.caps[k];return `<span class="cap ${l}">${capIcon(l)}${capName[k]}</span>`}
+function renderGrid(){
+  const list=filtered();
+  $('#countLine').textContent=`// ${list.length} 款产品符合当前筛选`+(state.cap?`（已限定「${capName[state.cap]}」为原生具备）`:'');
+  $('#grid').innerHTML=list.map(p=>`
+    <div class="pcard" onclick="openModal('${p.id}')">
+      <div class="top">
+        <div><div class="brand">${p.brand}</div><h3>${p.name}<small>${p.sub||''}</small></h3></div>
+        <div class="badges">${stBadge[p.status]}<span class="badge b-cat">${CAT[p.cat]}</span></div>
+      </div>
+      <div class="caps">${capPip(p,'screen')}${capPip(p,'voice')}${capPip(p,'iot')}${capPip(p,'ai')}</div>
+      <div class="price">${p.price}<small>${p.priceNote?'':''}</small></div>
+      <div class="one">${p.one}</div>
+    </div>`).join('')||'<p style="color:var(--ink3)">没有符合筛选的产品。</p>';
+}
+$$('.fbtn').forEach(b=>b.addEventListener('click',()=>{
+  $$(`.fbtn[data-f="${b.dataset.f}"]`).forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); state[b.dataset.f]=b.dataset.v; renderGrid();
+}));
+$$('.cap-card').forEach(c=>c.addEventListener('click',()=>{
+  const cap=c.dataset.cap;
+  if(state.cap===cap){state.cap=null;c.classList.remove('active');}
+  else{state.cap=cap;$$('.cap-card').forEach(x=>x.classList.remove('active'));c.classList.add('active');}
+  renderGrid();
+}));
+
+/* modal */
+function mcapBox(p,k){const l=p.caps[k];return `<div class="mcap ${l}"><div class="t">${capName[k]}</div><div class="v">${capIcon(l)} <b>${l==='full'?'原生具备':l==='part'?'部分/可扩展':'不具备'}</b><br>${p.capText[k]}</div></div>`}
+window.openModal=function(id){
+  const p=PRODUCTS.find(x=>x.id===id); if(!p)return;
+  $('#modal').innerHTML=`
+    <button class="close" onclick="closeModal()">✕</button>
+    <div class="m-brand">${p.brand} · ${CAT[p.cat]}</div>
+    <h2>${p.name}</h2>
+    <div class="m-sub">${p.sub||''}</div>
+    <div class="m-badges">${stBadge[p.status]}<span class="badge b-cat">${p.region==='cn'?'国内':'海外'}</span>
+      <span class="badge b-ann" style="background:none;border-color:var(--line);color:var(--amber)">${p.price}</span></div>
+    ${p.priceNote?`<p style="font-size:12.5px;color:var(--ink3);margin:-12px 0 18px">${p.priceNote}</p>`:''}
+    <div class="m-caps">${mcapBox(p,'screen')}${mcapBox(p,'voice')}${mcapBox(p,'iot')}${mcapBox(p,'ai')}</div>
+    <div class="msec"><h4>硬件配置</h4><table class="spec-table">${p.specs.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td></tr>`).join('')}</table></div>
+    <div class="msec"><h4>结构与 ID</h4><p>${p.structure}</p></div>
+    <div class="msec"><h4>软件与主要功能</h4><p>${p.software}</p></div>
+    <div class="msec"><h4>卖点与竞争力</h4><ul>${p.points.map(x=>`<li>${x}</li>`).join('')}</ul>
+      <p style="margin-top:10px"><b style="color:var(--teal)">优势：</b>${p.pros}<br><b style="color:var(--red)">短板：</b>${p.cons}</p></div>
+    <div class="msec"><h4>PM 评分</h4><div class="score-row">${p.scores.map(s=>`
+      <div class="score"><span class="lbl">${s[0]}</span><span class="bar"><i style="width:${s[1]*10}%"></i></span><span class="n">${s[1].toFixed(1)}</span></div>`).join('')}</div></div>
+    <div class="pm-note">${p.pm}</div>`;
+  $('#mask').classList.add('show'); document.body.style.overflow='hidden';
+};
+window.closeModal=function(){$('#mask').classList.remove('show');document.body.style.overflow='';};
+$('#mask').addEventListener('click',e=>{if(e.target.id==='mask')closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+/* compare table */
+const markL=l=>l==='full'?'<span class="mark m-full">● 原生</span>':l==='part'?'<span class="mark m-part">◐ 部分</span>':'<span class="mark m-no">○ 无</span>';
+let sortK=null,sortD=1;
+function renderTable(){
+  let rows=[...PRODUCTS];
+  if(sortK){rows.sort((a,b)=>{
+    const va=sortK==='price'?(parseFloat(a.price.replace(/[^0-9.]/g,''))||0):sortK in a.caps?({full:2,part:1,none:0}[a.caps[sortK]]):String(a[sortK]);
+    const vb=sortK==='price'?(parseFloat(b.price.replace(/[^0-9.]/g,''))||0):sortK in b.caps?({full:2,part:1,none:0}[b.caps[sortK]]):String(b[sortK]);
+    return (va>vb?1:va<vb?-1:0)*sortD;
+  });}
+  $('#cmpTable tbody').innerHTML=rows.map(p=>`<tr>
+    <td><span class="pname" onclick="openModal('${p.id}')">${p.name}</span><br><span style="color:var(--ink3);font-size:11px">${p.brand}</span></td>
+    <td>${CAT[p.cat]}</td><td>${STATUS[p.status]}</td><td style="white-space:nowrap">${p.price}</td>
+    <td>${markL(p.caps.screen)}</td><td>${markL(p.caps.voice)}</td><td>${markL(p.caps.iot)}</td><td>${markL(p.caps.ai)}</td></tr>`).join('');
+}
+$$('#cmpTable th').forEach(th=>th.addEventListener('click',()=>{
+  const k=th.dataset.k; if(sortK===k)sortD*=-1;else{sortK=k;sortD=1;} renderTable();
+}));
+
+/* scatter */
+const cv=$('#scatter'),ctx=cv.getContext('2d'),tip=$('#stip');
+let pts=[];
+function scoreInteraction(p){return ({full:2,part:1,none:0}[p.caps.screen]+{full:2,part:1,none:0}[p.caps.voice]+{full:2,part:1,none:0}[p.caps.iot])/6}
+function scoreStorage(p){
+  const s={nas:.95,host:.55,panel:.08}[p.cat];
+  const bump={'ugreen-idx6011pro':.03,'minisforum-n5max':.05,'huawei-x2pro':-.05,'ezviz-corex':.15,'ezviz-tianji':.1,'ha-voice-green':-.25,'switchbot-hub3':-.3,'aqara-hub-m3':-.35,'homey-pro':-.35,'ugreen-dxp4800':0}[p.id]||0;
+  return Math.min(1,Math.max(0,s+bump));
+}
+function drawScatter(){
+  const dpr=window.devicePixelRatio||1, w=cv.clientWidth, h=520;
+  cv.width=w*dpr; cv.height=h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  const pad={l:56,r:26,t:26,b:48};
+  const X=v=>pad.l+v*(w-pad.l-pad.r), Y=v=>pad.t+(1-v)*(h-pad.t-pad.b);
+  ctx.strokeStyle='#1b1f26';ctx.fillStyle='#6d6a62';ctx.font='11px Menlo,monospace';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){const x=X(i/4);ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,h-pad.b);ctx.stroke();}
+  for(let i=0;i<=4;i++){const y=Y(i/4);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();}
+  // quadrant blank zone
+  ctx.setLineDash([5,5]);ctx.strokeStyle='rgba(224,164,88,.55)';ctx.lineWidth=1.4;
+  const zx=X(.62),zy=Y(.68);
+  ctx.strokeRect(zx,pad.t,w-pad.r-zx,zy-pad.t);
+  ctx.setLineDash([]);ctx.fillStyle='rgba(224,164,88,.85)';ctx.font='12px -apple-system,"PingFang SC",sans-serif';
+  ctx.fillText('三权合一空白区',zx+10,pad.t+20);
+  // axes labels
+  ctx.fillStyle='#a8a49b';ctx.font='12px -apple-system,"PingFang SC",sans-serif';
+  ctx.fillText('存储 / 算力属性 →',w-pad.r-150,h-14);
+  ctx.save();ctx.translate(16,pad.t+150);ctx.rotate(-Math.PI/2);ctx.fillText('交互 / 物联属性 →',0,0);ctx.restore();
+  const colors={nas:'#5db8a8',host:'#e0a458',panel:'#6f9fd8'};
+  pts=[];
+  // jitter to avoid overlap
+  const placed=[];
+  PRODUCTS.forEach(p=>{
+    let x=scoreStorage(p),y=scoreInteraction(p);
+    let tries=0;
+    while(placed.some(q=>Math.hypot((q.x-x)*w,(q.y-y)*h)<30)&&tries<12){x+=(Math.random()-.5)*.05;y+=(Math.random()-.5)*.04;tries++;}
+    x=Math.min(.99,Math.max(.01,x));y=Math.min(.99,Math.max(.01,y));
+    placed.push({x,y});
+    const px=X(x),py=Y(y);
+    const r=p.status==='sale'?9:p.status==='ann'?8:7;
+    ctx.beginPath();ctx.arc(px,py,r,0,7);
+    ctx.fillStyle=colors[p.cat]+(p.status==='rumor'?'66':p.status==='ann'?'aa':'dd');ctx.fill();
+    ctx.strokeStyle=colors[p.cat];ctx.lineWidth=1.6;ctx.stroke();
+    ctx.fillStyle='#cfccc4';ctx.font='11.5px -apple-system,"PingFang SC",sans-serif';
+    const short=p.name.replace(/（.*?）|\s*\/.*|\+ 同系.*/,'').slice(0,14);
+    ctx.fillText(short,px+r+5,py+4);
+    pts.push({px,py,r:r+5,p});
+  });
+}
+cv.addEventListener('mousemove',e=>{
+  const b=cv.getBoundingClientRect(),mx=e.clientX-b.left,my=e.clientY-b.top;
+  const hit=pts.find(q=>Math.hypot(q.px-mx,q.py-my)<q.r);
+  if(hit){tip.style.display='block';
+    tip.innerHTML=`<b>${hit.p.name}</b><br><span style="color:var(--ink2)">${CAT[hit.p.cat]} · ${STATUS[hit.p.status]} · ${hit.p.price}</span><br><span style="color:var(--ink2);font-size:11.5px">${hit.p.one}</span>`;
+    const bw=$('.scatter-box').getBoundingClientRect();
+    tip.style.left=Math.min(e.clientX-bw.left+16,bw.width-260)+'px';tip.style.top=(e.clientY-bw.top+14)+'px';
+    cv.style.cursor='pointer';
+  }else{tip.style.display='none';cv.style.cursor='crosshair';}
+});
+cv.addEventListener('mouseleave',()=>tip.style.display='none');
+cv.addEventListener('click',e=>{
+  const b=cv.getBoundingClientRect(),mx=e.clientX-b.left,my=e.clientY-b.top;
+  const hit=pts.find(q=>Math.hypot(q.px-mx,q.py-my)<q.r);
+  if(hit)openModal(hit.p.id);
+});
+window.addEventListener('resize',drawScatter);
+
+/* essays & edges */
+$('#essays').innerHTML=ESSAYS.map((e,i)=>`
+  <div class="essay ${i===0?'open':''}">
+    <div class="essay-head" onclick="this.parentElement.classList.toggle('open')">
+      <span class="no">${e.no}</span><h3>${e.title}<small>${e.sub}</small></h3><span class="arrow">▶</span>
+    </div>
+    <div class="essay-body">${e.body}</div>
+  </div>`).join('');
+$('#edgeGrid').innerHTML=EDGES.map(e=>`<div class="edge"><h4>${e.n}<span class="tag">${e.t}</span></h4><p>${e.d}</p></div>`).join('');
+
+/* stats chips */
+$('#totop').addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+addEventListener('scroll',()=>$('#totop').classList.toggle('show',scrollY>700));
+
+renderGrid();renderTable();drawScatter();
+</script>
+</body>
+</html>
